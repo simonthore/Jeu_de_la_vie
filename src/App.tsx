@@ -12,6 +12,18 @@ function renderGame(context: CanvasRenderingContext2D, game: GameOfLife, squareS
   }
 }
 
+function drawGrid(context: CanvasRenderingContext2D, canvasWidth: number, canvasHeight: number, squareSize: number) {
+  for(let x = 0 ; x <= canvasWidth; x += squareSize){
+    context.moveTo(x, 0);
+    context.lineTo(x, canvasHeight);
+  }
+  for(let y = 0; y <= canvasHeight; y += squareSize){
+    context.moveTo(0, y);
+    context.lineTo(canvasWidth, y);
+  }
+  context.strokeStyle = "lightgray";
+  context.stroke();
+}
 
 function App() {
   const canvasRef = React.useRef<HTMLCanvasElement>(null);
@@ -25,19 +37,9 @@ function App() {
       if (context) {
       context.fillStyle = 'white';
       context.fillRect(0, 0, canvas.width, canvas.height);
-
-        // quadrillage du gameBoard
-        for(let x = 0 ; x <= canvas.width; x += squareSize){
-        context.moveTo(x,0)
-        context.lineTo(x, canvas.height) 
-        }
-        for(let y = 0; y <= canvas.height; y+= squareSize){
-          context.moveTo(0,y)
-          context.lineTo(canvas.width, y)
-        }
-        context.strokeStyle = "lightgray"
-        context.stroke();
-        renderGame(context,game,squareSize)
+      
+      renderGame(context,game,squareSize);
+      drawGrid(context, canvas.width, canvas.height, squareSize);
       }
     }
   }, [game]);
@@ -45,26 +47,25 @@ function App() {
   const handleCanvasClick = (event: React.MouseEvent<HTMLCanvasElement>) => {
     const canvas = canvasRef.current;
     if(canvas){
+
+      // getBoundingClientRect permet de récupérer les coordonnées du canvas par rapport à la fenêtre
       const rect = canvas.getBoundingClientRect();
       const x = event.clientX - rect.left;
       const y = event.clientY - rect.top;
-      const context = canvas.getContext('2d');
-      if(context){
-        const rowIndex = Math.floor(y/squareSize)
-        const colIndex = Math.floor(x/squareSize)
+      const rowIndex = Math.floor(y / squareSize);
+      const colIndex = Math.floor(x / squareSize);
 
-        // récupère les coordonnées du coin supérieur gauche de mon carré
-        const startX = colIndex * squareSize;
-        const startY = rowIndex * squareSize;
-   
-        // renvoie un objet contenant les données de mon carré dont la couleur de ses pixels
-        const imageData = context.getImageData(startX, startY, 1, 1).data
-        // Changer la couleur du carré en fonction de sa couleur actuelle
-        context.fillStyle = 'green';
-        context.fillRect(startX, startY, squareSize, squareSize);
-      }
+      // bascule de l'état de la cellule
+      game.toogleCellState(rowIndex, colIndex);
+
+      // redesine le canvas
+      const context = canvas.getContext('2d');
+      if (context) {
+        renderGame(context, game, squareSize);
+        drawGrid(context, canvas.width, canvas.height, squareSize);
     }
-  };
+  }
+};
  
   
   return (
