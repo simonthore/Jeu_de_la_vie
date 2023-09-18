@@ -1,15 +1,28 @@
-import React from "react";
+import React, {useState, useEffect} from "react";
 import "./App.css"
+import { GameOfLife } from "./component/GameOfLife";
+
+function renderGame(context: CanvasRenderingContext2D, game: GameOfLife, squareSize: number){
+  for(let row = 0; row < game.getRows(); row++){
+    for(let col = 0; col < game.getCols(); col++){
+    const cellState = game.getCellState(row, col);
+    context.fillStyle = cellState === 0 ? 'white' : 'green';
+    context.fillRect(col * squareSize, row * squareSize, squareSize, squareSize);
+    }
+  }
+}
+
+
 function App() {
   const canvasRef = React.useRef<HTMLCanvasElement>(null);
-  const squareSize = 25; 
+  const [game, setGame] = useState(new GameOfLife(34, 34));
+  const squareSize = 25;
 
-  React.useEffect(() => {
-
+  useEffect(() => {
     const canvas = canvasRef.current;
-    if(canvas !== null){
-    const context = canvas.getContext('2d');
-      if(context){
+    if (canvas) {
+      const context = canvas.getContext('2d');
+      if (context) {
       context.fillStyle = 'white';
       context.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -24,9 +37,10 @@ function App() {
         }
         context.strokeStyle = "lightgray"
         context.stroke();
+        renderGame(context,game,squareSize)
       }
     }
-  }, [squareSize]);
+  }, [game]);
 
   const handleCanvasClick = (event: React.MouseEvent<HTMLCanvasElement>) => {
     const canvas = canvasRef.current;
