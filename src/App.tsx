@@ -6,7 +6,7 @@ function renderGame(context: CanvasRenderingContext2D, game: GameOfLife, squareS
   for(let row = 0; row < game.getRows(); row++){
     for(let col = 0; col < game.getCols(); col++){
     const cellState = game.getCellState(row, col);
-    context.fillStyle = cellState === 0 ? 'white' : 'green';
+    context.fillStyle = cellState === 0 ? 'white' : 'black';
     context.fillRect(col * squareSize, row * squareSize, squareSize, squareSize);
     }
   }
