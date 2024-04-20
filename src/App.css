@@ -16,3 +16,17 @@ h1{
 canvas{
   border: 1px solid black
 }
+
+#control{
+  display: flex;
+  justify-content: center;
+}
+
+button{
+  padding: 5px;
+  background-color: grey;
+  color: antiquewhite;
+  font-weight: 600;
+  font-size: 22px;
+
+}

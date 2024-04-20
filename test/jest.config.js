@@ -1,9 +1,12 @@
 module.exports = {
   preset: 'ts-jest',
-  testEnvironment: 'node',
+  testEnvironment: 'jsdom',
   transform: {
     '^.+\\.tsx?$': ['ts-jest', {
-      // Votre configuration ts-jest spécifique, si vous en avez une, irait ici.
     }],
   },
+  // gère les problèmes de css dans les fichiers de test
+  moduleNameMapper: {
+    "\\.(css|less|scss|sass)$": "<rootDir>/__mocks__/styleMock.js"
+  }
 };

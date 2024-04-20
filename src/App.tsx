@@ -1,6 +1,7 @@
-import React, {useState, useEffect} from "react";
+import React, {useState, useEffect, useRef} from "react";
 import "./App.css"
 import { GameOfLife } from "./component/GameOfLife";
+import { applyRule1 } from "./Rules";
 
 function renderGame(context: CanvasRenderingContext2D, game: GameOfLife, squareSize: number){
   for(let row = 0; row < game.getRows(); row++){
@@ -11,6 +12,8 @@ function renderGame(context: CanvasRenderingContext2D, game: GameOfLife, squareS
     }
   }
 }
+
+
 
 function drawGrid(context: CanvasRenderingContext2D, canvasWidth: number, canvasHeight: number, squareSize: number) {
   for(let x = 0 ; x <= canvasWidth; x += squareSize){
@@ -26,9 +29,16 @@ function drawGrid(context: CanvasRenderingContext2D, canvasWidth: number, canvas
 }
 
 function App() {
-  const canvasRef = React.useRef<HTMLCanvasElement>(null);
+  const canvasRef = React.useRef<HTMLCanvasElement>(null);  
   const [game, setGame] = useState(new GameOfLife(34, 34));
+  const [convasSize, setConvasSize] = useState({width:window.innerWidth, height: window.innerHeight});
+
   const squareSize = 25;
+
+  const ApplyRuleAndUpdateGame = () => {
+    const nextGame = applyRule1(game)
+    setGame(nextGame)
+  }
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -40,6 +50,7 @@ function App() {
       
       renderGame(context,game,squareSize);
       drawGrid(context, canvas.width, canvas.height, squareSize);
+
       }
     }
   }, [game]);
@@ -66,16 +77,25 @@ function App() {
     }
   }
 };
+const handleStart = () => {
+  // Appel de la fonction pour appliquer la règle et mettre à jour le jeu
+  ApplyRuleAndUpdateGame();
+  console.log("start");
+};
  
   
-  return (
-    <>
-    <h1>Le jeu de la vie !</h1>
-    <div id="gameBoard">
-      <canvas ref={canvasRef} width="850" height="550" onClick={handleCanvasClick}></canvas>
-    </div>
-    </>
-  );
-}
+    return (
+      <>
+      <h1>Le jeu de la vie !</h1>
+      <div id="control">
+        <button className="button" onClick={handleStart}>Start the game</button>
+        <button onClick={() => setGame(new GameOfLife(34, 34))}>Reset</button>
+      </div>
+      <div id="gameBoard">
+        <canvas ref={canvasRef} data-testid={'canvas'}width="850" height="550" onClick={handleCanvasClick}></canvas>
+      </div>
+      </>
+    );
+  }
 
 export default App;
