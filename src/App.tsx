@@ -1,7 +1,7 @@
 import React, {useState, useEffect, useRef} from "react";
 import "./App.css"
 import { GameOfLife } from "./component/GameOfLife";
-import { applyRule1 } from "./Rules";
+import { rule1, applyRules, RuleFunction } from "./Rules";
 
 function renderGame(context: CanvasRenderingContext2D, game: GameOfLife, squareSize: number){
   for(let row = 0; row < game.getRows(); row++){
@@ -36,9 +36,9 @@ function App() {
   const squareSize = 25;
 
   const ApplyRuleAndUpdateGame = () => {
-    const nextGame = applyRule1(game)
-    setGame(nextGame)
-  }
+    const nextGame = applyRules(game, rule1);
+    setGame(nextGame);
+  };
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -77,8 +77,8 @@ function App() {
     }
   }
 };
+
 const handleStart = () => {
-  // Appel de la fonction pour appliquer la règle et mettre à jour le jeu
   ApplyRuleAndUpdateGame();
   console.log("start");
 };

@@ -1,28 +1,36 @@
-
 import { GameOfLife } from "./component/GameOfLife";
 
-// Créez une fonction dans votre fichier Rules.tsx pour appliquer la règle n°1
-export function applyRule1(currentGame: GameOfLife): GameOfLife {
-  const numRows = currentGame.getRows();
-  const numCols = currentGame.getCols();
-  const nextGame = new GameOfLife(numRows, numCols);
 
-  // Parcourez chaque cellule du jeu
-  for (let row = 0; row < numRows; row++) {
-    for (let col = 0; col < numCols; col++) {
-      const liveNeighbors = currentGame.countLiveNeighbors(row, col);
+// Règle 1 : Une cellule morte ayant exactement 3 cellules voisines vivantes devient une cellule vivante.
 
-      // Vérifiez si la cellule est morte et a exactement 3 voisines vivantes
-      if (currentGame.getCellState(row, col) === 0 && liveNeighbors === 3) {
-        // Si c'est le cas, la cellule devient vivante dans le jeu suivant
-        nextGame.setCellState(row, col, 1);
-      } else {
-        // Sinon, conservez l'état actuel de la cellule dans le jeu suivant
-        nextGame.setCellState(row, col, currentGame.getCellState(row, col));
-      }
+export function rule1(row: number, col: number, currentGame: GameOfLife): number {
+    const liveNeighbors = currentGame.countLiveNeighbors(row, col);
+    const cellState = currentGame.getCellState(row, col);
+
+    // Appliquer les règles du jeu de la vie à chaque cellule
+    if (cellState === 0 && liveNeighbors === 3) {
+        return 1; // Cellule naît
+    } else {
+        return cellState; // Conserver l'état actuel de la cellule
     }
-  }
+}
 
-  // Renvoyez le jeu modifié avec la règle appliquée
-  return nextGame;
+
+
+export type RuleFunction = (row: number, col: number, currentGame: GameOfLife) => number;
+
+export function applyRules(currentGame: GameOfLife, ruleFunction: RuleFunction): GameOfLife {
+    const numRows = currentGame.getRows();
+    const numCols = currentGame.getCols();
+    const nextGame = new GameOfLife(numRows, numCols);
+
+    for (let row = 0; row < numRows; row++) {
+        for (let col = 0; col < numCols; col++) {
+            const newCellState = ruleFunction(row, col, currentGame);
+            nextGame.setCellState(row, col, newCellState);
+        
+        }
+    }
+
+    return nextGame;
 }
