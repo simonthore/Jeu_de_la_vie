@@ -15,20 +15,42 @@ export function rule1(row: number, col: number, currentGame: GameOfLife): number
     }
 }
 
+// Règle 2 & 3 : Une cellule vivante ayant moins de deux voisines vivantes meurt d'isolement, 
+//           tandis qu'une cellule vivante ayant plus de trois voisines vivantes meurt de surpopulation.
+
+export function rule2(row:number, col:number, currentGame:GameOfLife): number {
+    const liveNeighbors = currentGame.countLiveNeighbors(row, col);
+    const cellState = currentGame.getCellState(row, col);
+    if(cellState === 1 && liveNeighbors <2){
+        return 0; 
+    } else if (cellState === 1 && liveNeighbors >3){
+        return 0
+    } else {
+        return cellState
+    }
+}
+
+
+
 
 
 export type RuleFunction = (row: number, col: number, currentGame: GameOfLife) => number;
 
-export function applyRules(currentGame: GameOfLife, ruleFunction: RuleFunction): GameOfLife {
+export function applyRules(currentGame: GameOfLife, ruleFunctions: RuleFunction[]): GameOfLife {
     const numRows = currentGame.getRows();
     const numCols = currentGame.getCols();
     const nextGame = new GameOfLife(numRows, numCols);
 
     for (let row = 0; row < numRows; row++) {
         for (let col = 0; col < numCols; col++) {
-            const newCellState = ruleFunction(row, col, currentGame);
-            nextGame.setCellState(row, col, newCellState);
-        
+            let newCellState = currentGame.getCellState(row, col);
+            for(const ruleFunction of ruleFunctions){
+                newCellState = ruleFunction(row,col,currentGame)
+                if (newCellState !==currentGame.getCellState(row,col)){
+                    break
+                }
+            }
+           nextGame.setCellState(row,col,newCellState);
         }
     }
 

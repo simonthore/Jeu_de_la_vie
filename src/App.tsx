@@ -1,7 +1,7 @@
 import React, {useState, useEffect, useRef} from "react";
 import "./App.css"
 import { GameOfLife } from "./component/GameOfLife";
-import { rule1, applyRules, RuleFunction } from "./Rules";
+import { rule1,rule2, applyRules, RuleFunction } from "./Rules";
 
 function renderGame(context: CanvasRenderingContext2D, game: GameOfLife, squareSize: number){
   for(let row = 0; row < game.getRows(); row++){
@@ -36,7 +36,7 @@ function App() {
   const squareSize = 25;
 
   const ApplyRuleAndUpdateGame = () => {
-    const nextGame = applyRules(game, rule1);
+    const nextGame = applyRules(game, [rule1, rule2]);
     setGame(nextGame);
   };
 
