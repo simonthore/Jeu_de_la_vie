@@ -2,6 +2,8 @@ import React, {useState, useEffect, useRef} from "react";
 import "./App.css"
 import { GameOfLife } from "./component/GameOfLife";
 import { rule1,rule2, applyRules, RuleFunction } from "./Rules";
+import avance from './assets/avance.png'
+import fleche from './assets/fleche-droite.png'
 
 function renderGame(context: CanvasRenderingContext2D, game: GameOfLife, squareSize: number){
   for(let row = 0; row < game.getRows(); row++){
@@ -82,13 +84,17 @@ const handleStart = () => {
   ApplyRuleAndUpdateGame();
   console.log("start");
 };
+const fastStart = () => {
+  ApplyRuleAndUpdateGame()
+}
  
   
     return (
       <>
       <h1>Le jeu de la vie !</h1>
       <div id="control">
-        <button className="button" onClick={handleStart}>Start the game</button>
+        <button className="button" onClick={handleStart}><img src={fleche} alt="start" /></button>
+        <button className="buttonInfinit" onClick={fastStart}><img src={avance} alt="avance-rapide" /></button>
         <button onClick={() => setGame(new GameOfLife(34, 34))}>Reset</button>
       </div>
       <div id="gameBoard">
