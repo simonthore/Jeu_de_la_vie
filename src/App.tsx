@@ -98,7 +98,6 @@ function App() {
             <h1>Le jeu de la vie !</h1>
             <div id="control">
                 <button className="button" onClick={handleStart}>
-                    <button></button>
                     Start the game
                 </button>
                 <button onClick={() => setGame(new GameOfLife(34, 34))}>
